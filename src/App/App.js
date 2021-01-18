@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Route, Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import NoteListNav from '../NoteListNav/NoteListNav'
@@ -11,13 +11,12 @@ import ApiContext from '../ApiContext'
 import config from '../config'
 import './App.css'
 
-class App extends Component {
-  state = {
-    notes: [],
-    folders: [],
-  };
+function App () {
+  const [notes, setNotes] = useState([])
+  const [folders, setFolders] = useState([])
 
-  componentDidMount() {
+  //replaces component did mount
+  useEffect(()=> {
     Promise.all([
       fetch(`${config.API_ENDPOINT}/notes`),
       fetch(`${config.API_ENDPOINT}/folders`)
@@ -34,38 +33,35 @@ class App extends Component {
         ])
       })
       .then(([notes, folders]) => {
-        this.setState({ notes, folders })
+        setNotes(notes)
+        setFolders(folders)
       })
       .catch(error => {
         console.error({ error })
       })
-  }
+  },[])
 
-  handleAddFolder = folder => {
-    this.setState({
-      folders: [
-        ...this.state.folders,
+  const handleAddFolder = folder => {
+    setFolders([
+        ...folders,
         folder
       ]
-    })
+    )
   }
 
-  handleAddNote = note => {
-    this.setState({
-      notes: [
-        ...this.state.notes,
+  const handleAddNote = note => {
+    setNotes([
+        ...notes,
         note
       ]
-    })
+    )
   }
 
-  handleDeleteNote = noteId => {
-    this.setState({
-      notes: this.state.notes.filter(note => note.id !== noteId)
-    })
+  const handleDeleteNote = noteId => {
+    setNotes(notes.filter(note => note.id !== noteId))
   }
 
-  renderNavRoutes() {
+  function renderNavRoutes() {
     return (
       <>
         {['/', '/folder/:folderId'].map(path =>
@@ -92,7 +88,7 @@ class App extends Component {
     )
   }
 
-  renderMainRoutes() {
+  function renderMainRoutes() {
     return (
       <>
         {['/', '/folder/:folderId'].map(path =>
@@ -119,19 +115,18 @@ class App extends Component {
     )
   }
 
-  render() {
     const value = {
-      notes: this.state.notes,
-      folders: this.state.folders,
-      addFolder: this.handleAddFolder,
-      addNote: this.handleAddNote,
-      deleteNote: this.handleDeleteNote,
+      notes: notes,
+      folders: folders,
+      addFolder: handleAddFolder,
+      addNote: handleAddNote,
+      deleteNote: handleDeleteNote,
     }
     return (
       <ApiContext.Provider value={value}>
         <div className='App'>
           <nav className='App__nav'>
-            {this.renderNavRoutes()}
+            {renderNavRoutes()}
           </nav>
           <header className='App__header'>
             <h1>
@@ -141,12 +136,11 @@ class App extends Component {
             </h1>
           </header>
           <main className='App__main'>
-            {this.renderMainRoutes()}
+            {renderMainRoutes()}
           </main>
         </div>
       </ApiContext.Provider>
     )
-  }
 }
 
 export default App

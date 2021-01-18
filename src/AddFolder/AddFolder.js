@@ -1,18 +1,18 @@
-import React, { Component } from 'react'
+import React, { useContext } from 'react'
 import NotefulForm from '../NotefulForm/NotefulForm'
 import ApiContext from '../ApiContext'
 import config from '../config'
 import './AddFolder.css'
 
-export default class AddFolder extends Component {
-  static defaultProps = {
+export default function AddFolder(props) {
+  AddFolder.defaultProps = {
     history: {
       push: () => { }
     },
   }
-  static contextType = ApiContext;
+ const context = useContext(ApiContext)
 
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault()
     const folder = {
       name: e.target['folder-name'].value
@@ -30,24 +30,23 @@ export default class AddFolder extends Component {
         return res.json()
       })
       .then(folder => {
-        this.context.addFolder(folder)
-        this.props.history.push(`/folder/${folder.id}`)
+        context.addFolder(folder)
+        props.history.push(`/folder/${folder.id}`)
       })
       .catch(error => {
         console.error({ error })
       })
   }
 
-  render() {
     return (
       <section className='AddFolder'>
         <h2>Create a folder</h2>
-        <NotefulForm onSubmit={this.handleSubmit}>
+        <NotefulForm onSubmit={handleSubmit}>
           <div className='field'>
             <label htmlFor='folder-name-input'>
               Name
             </label>
-            <input type='text' id='folder-name-input' name='folder-name' />
+            <input required type='text' id='folder-name-input' name='folder-name' />
           </div>
           <div className='buttons'>
             <button type='submit'>
@@ -57,5 +56,4 @@ export default class AddFolder extends Component {
         </NotefulForm>
       </section>
     )
-  }
 }
