@@ -16,6 +16,7 @@ class Note extends React.Component {
   handleClickDelete = e => {
     e.preventDefault()
     const noteId = this.props.match.params.noteId
+    console.log(noteId)
 
     fetch(`${config.API_ENDPOINT}/notes/${noteId}`, {
       method: 'DELETE',
