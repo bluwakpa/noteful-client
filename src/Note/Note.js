@@ -5,8 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ApiContext from '../ApiContext'
 import config from '../config'
 import './Note.css'
+import { withRouter } from "react-router";
 
-export default class Note extends React.Component {
+class Note extends React.Component {
   static defaultProps ={
     onDeleteNote: () => {},
   }
@@ -14,7 +15,7 @@ export default class Note extends React.Component {
 
   handleClickDelete = e => {
     e.preventDefault()
-    const noteId = this.props.id
+    const noteId = this.props.match.params.noteId
 
     fetch(`${config.API_ENDPOINT}/notes/${noteId}`, {
       method: 'DELETE',
@@ -68,3 +69,5 @@ export default class Note extends React.Component {
     )
   }
 }
+
+export default withRouter(Note);
