@@ -1,18 +1,18 @@
-import React, { Component } from 'react'
+import React, { useContext } from 'react'
 import NotefulForm from '../NotefulForm/NotefulForm'
 import ApiContext from '../ApiContext'
 import config from '../config'
 import './AddNote.css'
 
-export default class AddNote extends Component {
-  static defaultProps = {
+export default function AddNote(props) {
+  AddNote.defaultProps = {
     history: {
       push: () => { }
     },
   }
-  static contextType = ApiContext;
+  const context = useContext(ApiContext)
 
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault()
     const newNote = {
       name: e.target['note-name'].value,
@@ -33,38 +33,37 @@ export default class AddNote extends Component {
         return res.json()
       })
       .then(note => {
-        this.context.addNote(note)
-        this.props.history.push(`/folder/${note.folderId}`)
+        context.addNote(note)
+        props.history.push(`/folder/${note.folderId}`)
       })
       .catch(error => {
         console.error({ error })
       })
   }
 
-  render() {
-    const { folders=[] } = this.context
+    const { folders=[] } = context
     return (
       <section className='AddNote'>
         <h2>Create a note</h2>
-        <NotefulForm onSubmit={this.handleSubmit}>
+        <NotefulForm onSubmit={handleSubmit}>
           <div className='field'>
             <label htmlFor='note-name-input'>
               Name
             </label>
-            <input type='text' id='note-name-input' name='note-name' />
+            <input required type='text' id='note-name-input' name='note-name' />
           </div>
           <div className='field'>
             <label htmlFor='note-content-input'>
               Content
             </label>
-            <textarea id='note-content-input' name='note-content' />
+            <textarea required id='note-content-input' name='note-content' />
           </div>
           <div className='field'>
             <label htmlFor='note-folder-select'>
               Folder
             </label>
-            <select id='note-folder-select' name='note-folder-id'>
-              <option value={null}>...</option>
+            <select required id='note-folder-select' name='note-folder-id'>
+              <option value=''>...</option>
               {folders.map(folder =>
                 <option key={folder.id} value={folder.id}>
                   {folder.name}
@@ -80,5 +79,4 @@ export default class AddNote extends Component {
         </NotefulForm>
       </section>
     )
-  }
 }
