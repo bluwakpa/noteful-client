@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, withRouter } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { format } from 'date-fns'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ApiContext from '../ApiContext'
@@ -7,7 +7,7 @@ import config from '../config'
 import './Note.css'
 // import { withRouter } from "react-router";
 
-class Note extends React.Component {
+export default class Note extends React.Component {
   static defaultProps ={
     onDeleteNote: () => {},
   }
@@ -70,5 +70,3 @@ class Note extends React.Component {
     )
   }
 }
-
-export default withRouter(Note);
