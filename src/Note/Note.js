@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ApiContext from '../ApiContext'
 import config from '../config'
 import './Note.css'
-import id from '../NotePageMain/NotePageMain'
+// import id from '../NotePageMain/NotePageMain'
 // import { withRouter } from "react-router";
 
 export default class Note extends React.Component {
@@ -17,8 +17,6 @@ export default class Note extends React.Component {
   handleClickDelete = e => {
     e.preventDefault()
     const noteId = this.props.id
-    console.log('this.props.id', this.props.id)
-    console.log('noteId', noteId)
 
     fetch(`${config.API_ENDPOINT}/notes/${noteId}`, {
       method: 'DELETE',
@@ -26,12 +24,9 @@ export default class Note extends React.Component {
         'content-type': 'application/json'
       },
     })
-      // .then(res => {
-      //   if (!res.ok)
-      //     return res.json().then(e => Promise.reject(e))
-      //   return res.json()
-      // })
-      .then(() => {
+      .then(res => {
+        if (!res.ok)
+          return Promise.reject(e)
         this.context.deleteNote(noteId)
         // allow parent to perform extra behaviour
         this.props.onDeleteNote(noteId)
